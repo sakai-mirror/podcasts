@@ -18,5 +18,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/util-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
 	<classpathentry kind="src" path="/component-api"/>
+	<classpathentry kind="src" path="/content-impl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
