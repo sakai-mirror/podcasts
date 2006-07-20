@@ -22,5 +22,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/authz-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/user-api"/>
 	<classpathentry kind="var" path="MAVEN_REPO/rome/jars/rome-0.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4.jar"/>
+	<classpathentry kind="var" path="MYECLIPSE_SPRING_DATA_HOME/1.2/lib/spring-web.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
