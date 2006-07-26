@@ -21,9 +21,10 @@
 	<classpathentry kind="src" path="/content-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/authz-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/user-api"/>
-	<classpathentry kind="var" path="MAVEN_REPO/rome/jars/rome-0.8.jar"/>
+	<classpathentry sourcepath="/MAVEN_REPO" kind="var" path="MAVEN_REPO/rome/jars/rome-0.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4.jar"/>
 	<classpathentry kind="var" path="MYECLIPSE_SPRING_DATA_HOME/1.2/lib/spring-web.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/email-api"/>
+	<classpathentry kind="lib" path="/Users/josephrodriguez/Desktop/itunes-0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
