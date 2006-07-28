@@ -26,5 +26,7 @@
 	<classpathentry kind="var" path="MYECLIPSE_SPRING_DATA_HOME/1.2/lib/spring-web.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/email-api"/>
 	<classpathentry kind="lib" path="/Users/josephrodriguez/Desktop/itunes-0.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dav"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/user-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
