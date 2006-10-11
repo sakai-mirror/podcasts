@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-tool-api-dev.jar"/>
 	<classpathentry kind="src" path="podcasts-api/src/java"/>
 	<classpathentry kind="src" path="podcasts-app/src/java"/>
 	<classpathentry kind="src" path="podcasts-impl/impl/src/java"/>
