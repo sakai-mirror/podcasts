@@ -8,7 +8,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-api-1.1.01.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-impl-1.1.01.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/site-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/tool-api"/>
