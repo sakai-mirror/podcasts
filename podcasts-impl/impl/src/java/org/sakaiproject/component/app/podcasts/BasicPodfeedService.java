@@ -546,7 +546,7 @@ public class BasicPodfeedService implements PodfeedService {
 			podEntries = podcastService.getPodcasts(siteId);
 			
 			// remove any that are in the future
-			podEntries = podcastService.filterPodcasts(podEntries);
+			podEntries = podcastService.filterPodcasts(podEntries, siteId);
 
 		} 
 		catch (PermissionException e) {
