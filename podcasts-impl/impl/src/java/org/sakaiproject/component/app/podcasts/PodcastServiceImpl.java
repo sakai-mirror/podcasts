@@ -43,6 +43,7 @@ import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.content.api.GroupAwareEntity.AccessMode;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.EntityPropertyTypeException;
@@ -321,7 +322,8 @@ public class PodcastServiceImpl implements PodcastService {
 	}
 
 	/**
-	 * Remove on file resources from list of potential podcasts
+	 * Remove non-file resources from list of potential podcasts and
+	 * files restricted to groups user not part of
 	 * 
 	 * @param resourcesList
 	 *           The list of potential podcasts
@@ -344,9 +346,11 @@ public class PodcastServiceImpl implements PodcastService {
 
 				 aResource = (ContentResource) podcastIter.next();
 				
-				if (aResource.isResource() /*&& aResource.getProperties().getProperty(ResourceProperties.PROP_ORIGINAL_FILENAME) != null */) {
-					filteredResources.add(aResource);
-				
+				if (aResource.isResource()) {
+					if (aResource.getAccess().equals(AccessMode.GROUPED)) {
+						
+					}
+					filteredResources.add(aResource);				
 				}
 			} 
 			catch (ClassCastException e) {
@@ -436,9 +440,13 @@ public class PodcastServiceImpl implements PodcastService {
 				podcastsCollection = siteCollection + COLLECTION_PODCASTS
 				+ Entity.SEPARATOR;
 				
-				createPodcastsFolder(podcastsCollection, siteId);
-				
-				return podcastsCollection;
+				if (canUpdateSite()) {
+					createPodcastsFolder(podcastsCollection, siteId);
+					return podcastsCollection;
+				}
+				else {
+					return null;
+				}
 
 			}
 			catch (PermissionException e1) {
@@ -502,6 +510,9 @@ public class PodcastServiceImpl implements PodcastService {
 			// not have DISPLAY_DATE property
 			final ContentCollection collectionEdit = getContentCollection(siteId);
 
+			// TODO: check if folder is restricted to group access
+			//    and if so, does this user have access?
+			
 			resourcesList = collectionEdit.getMemberResources();
 
 			// remove non-file resources from collection
@@ -523,7 +534,12 @@ public class PodcastServiceImpl implements PodcastService {
 		} 
 		catch (IdUnusedException ex) {
 				// Does not exist, attempt to create it
+			if (canUpdateSite()) {
 				createPodcastsFolder(podcastsCollection, siteId);
+			}
+			else {
+				return new ArrayList();
+			}
 		}
 
 		return resourcesList;
@@ -1041,7 +1057,6 @@ public class PodcastServiceImpl implements PodcastService {
 
 	/**
 	 * Checks if podcast feed title and description exists and if not, add them
-	 * TODO: move to BasicPodfeedService
 	 * 
 	 * @param podcastsCollection
 	 * 			The id for the podcasts collection
