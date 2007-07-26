@@ -526,6 +526,9 @@ public class PodcastServiceImpl implements PodcastService {
 			final ContentCollection collectionEditRevised = getContentCollection(siteId);
 			resourcesList = collectionEditRevised.getMemberResources();
 
+			// hack to get this to work - already fixed in trunk so will not need to merge back
+			resourcesList = filterResources(resourcesList);
+			
 			// sort based on display (publish) date, most recent first
 			PodcastComparator podcastComparator = new PodcastComparator(
 					DISPLAY_DATE, false);
