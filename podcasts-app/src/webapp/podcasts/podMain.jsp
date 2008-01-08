@@ -11,7 +11,7 @@
   
       <h:form>
       
-	<h:form>
+	>
 
     <%-- if Resources tool not exist, if instructor, display error message
       		if student, display no podcasts exists --%>
