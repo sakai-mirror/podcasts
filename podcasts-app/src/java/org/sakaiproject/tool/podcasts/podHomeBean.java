@@ -654,6 +654,18 @@ public class podHomeBean {
 		final long size = Long.parseLong(podcastProperties.getProperty(ResourceProperties.PROP_CONTENT_LENGTH));
 		podcastInfo.setFileSize(size);
 
+			try {
+				String url = podcastService.getPodcastFileURL(podcastResource.getId());
+			}
+			catch (PermissionException e) {
+				LOG.warn("PermissionException getting podcast with id " + podcastResource.getId() + " while constructing DecoratedPodcastBean for site "
+						+ podcastService.getSiteId() + ". " + e.getMessage());
+			}
+			catch (IdUnusedException e) {
+				LOG.warn("IdUnusedException getting podcast with id " + podcastResource.getId() + " while constructing DecoratedPodcastBean for site "
+						+ podcastService.getSiteId() + ". " + e.getMessage());
+			}
+			
 		final double sizeMB = size / (1024.0 * 1024.0);
 		final DecimalFormat df = new DecimalFormat(MB_NUMBER_FORMAT);
 		String sizeString;
@@ -1382,6 +1394,7 @@ public class podHomeBean {
 				podcastService.removePodcast(selectedPodcast.getResourceId());
 			} 
 			else {
+
 				// only title, description, or date has changed, so can revise
 				podcastService.revisePodcast(selectedPodcast.resourceId,
 						selectedPodcast.title, displayDateRevise,
