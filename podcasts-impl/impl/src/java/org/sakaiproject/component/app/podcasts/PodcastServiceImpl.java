@@ -568,7 +568,7 @@ public class PodcastServiceImpl implements PodcastService {
 			// if added from Resources will not have this property.
 			// if not, this will call a method to set it.
 			// returns the revised list of podcasts, suitable for framing (sorting)
-			resourcesList = checkDISPLAY_DATE(resourcesList);
+			resourcesList = checkDISPLAY_DATE(resourcesList, siteId);
 
 			// sort based on display (publish) date, most recent first
 			PodcastComparator podcastComparator = new PodcastComparator(
@@ -968,6 +968,10 @@ public class PodcastServiceImpl implements PodcastService {
 	 * @return List The list of podcast resource all with DISPLAY_DATE property
 	 */
 	public List checkDISPLAY_DATE(List resourcesList) {
+		return checkDISPLAY_DATE(resourcesList, getSiteId());
+	}
+	
+	public List checkDISPLAY_DATE(List resourcesList, String siteId) {
 		// recreate the list in case needed to
 		// add DISPLAY_DATE to podcast(s)
 		List revisedList = new ArrayList();
@@ -991,12 +995,12 @@ public class PodcastServiceImpl implements PodcastService {
 				// Also, if hidden property set, release date becomes null.
 				if (aResource.getReleaseDate() == null) {
 					if (itsProperties.getProperty(DISPLAY_DATE) == null) {
-						aResource = setDISPLAY_DATE(aResource.getId(), null);
+						aResource = setDISPLAY_DATE(siteId, aResource.getId(), null);
 						itsProperties = aResource.getProperties();
 					}
 					
 					if (! aResource.isHidden()) {
-						setReleaseDate(aResource, itsProperties.getTimeProperty(DISPLAY_DATE));
+						setReleaseDate(siteId, aResource, itsProperties.getTimeProperty(DISPLAY_DATE));
 						
 						try {
 							aResource = getAResource(id);
@@ -1008,7 +1012,7 @@ public class PodcastServiceImpl implements PodcastService {
 				}
 				else {
 					if (itsProperties.getProperty(DISPLAY_DATE) == null) {
-						aResource = setDISPLAY_DATE(aResource.getId(), null);
+						aResource = setDISPLAY_DATE(siteId, aResource.getId(), null);
 						itsProperties = aResource.getProperties();
 					}
 				}
@@ -1018,11 +1022,11 @@ public class PodcastServiceImpl implements PodcastService {
 				LOG.info("DISPLAY_DATE does not exist for " + aResource.getId() + " attempting to add.");
 
 				try {
-					aResource = setDISPLAY_DATE(aResource.getId(), null);
+					aResource = setDISPLAY_DATE(siteId, aResource.getId(), null);
 				
 					if (aResource.getReleaseDate() == null && ! aResource.isHidden()) {
 						if (! aResource.isHidden()) {
-							setReleaseDate(aResource, itsProperties.getTimeProperty(DISPLAY_DATE));
+							setReleaseDate(siteId, aResource, itsProperties.getTimeProperty(DISPLAY_DATE));
 							aResource = getAResource(id);
 						}
 					}
@@ -1072,6 +1076,10 @@ public class PodcastServiceImpl implements PodcastService {
 	 * 				The Time object the Release Date is set to
 	 */
 	private ContentResource setReleaseDate(ContentResource aResource, Time displayDate) {
+		return setReleaseDate(getSiteId(), aResource, displayDate);
+	}
+	
+	private ContentResource setReleaseDate(String siteId, ContentResource aResource, Time displayDate) {
 		ContentResource refreshedResource = null;
 		ContentResourceEdit aResourceEdit = null;
 		
@@ -1087,7 +1095,7 @@ public class PodcastServiceImpl implements PodcastService {
 			
 				// add entry for event tracking
 				final Event event = EventTrackingService.newEvent(EVENT_REVISE_PODCAST,
-						getEventMessage(aResourceEdit.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME)),
+						getEventMessage(aResourceEdit.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME), siteId),
 											true, NotificationService.NOTI_NONE);
 				EventTrackingService.post(event);
 			}
@@ -1095,7 +1103,7 @@ public class PodcastServiceImpl implements PodcastService {
 		catch (Exception e1) {
 			// catches  PermissionException	IdUnusedException
 			//			TypeException		InUseException
-			LOG.error("Problem getting resource for editing while trying to set DISPLAY_DATE for site " + getSiteId() + ". ", e1);
+			LOG.error("Problem getting resource for editing while trying to set DISPLAY_DATE for site " + siteId + ". ", e1);
 			
 			if (aResourceEdit != null) {
 				contentHostingService.cancelResource(aResourceEdit);						
@@ -1122,6 +1130,10 @@ public class PodcastServiceImpl implements PodcastService {
 	 *            The ResourceProperties that need DISPLAY_DATE added
 	 */
 	public ContentResource setDISPLAY_DATE(String resourceId, Time releaseDate) {
+		return setDISPLAY_DATE(getSiteId(), resourceId, releaseDate);
+	}
+	
+	public ContentResource setDISPLAY_DATE(String siteId, String resourceId, Time releaseDate) {
 		ContentResource refreshedResource = null;
 		
 		final SimpleDateFormat formatterProp = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -1147,7 +1159,7 @@ public class PodcastServiceImpl implements PodcastService {
 			
 			// add entry for event tracking
 			final Event event = EventTrackingService.newEvent(EVENT_REVISE_PODCAST,
-									getEventMessage(aResource.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME)),
+									getEventMessage(aResource.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME), siteId),
 										true, NotificationService.NOTI_NONE);
 			EventTrackingService.post(event);
 		} 
@@ -1155,7 +1167,7 @@ public class PodcastServiceImpl implements PodcastService {
 			// catches EntityPropertyNotDefinedException
 			//         EntityPropertyTypeException, ParseException
 			LOG.error(e.getMessage() + " while setting DISPLAY_DATE for "
-							+ "for file in site " + getSiteId() + ". " + e.getMessage(), e);
+							+ "file in site " + siteId + ". " + e.getMessage(), e);
 			throw new Error(e);
 		} 
 
@@ -1499,7 +1511,11 @@ public class PodcastServiceImpl implements PodcastService {
 	 * 			The String to be used to post the event
 	 */
 	private String getEventMessage(Object object) {
-		return "/content/group/" + getSiteId() + "/Podcasts/" + getCurrentUser() + Entity.SEPARATOR + object.toString();
+		return getEventMessage(object, getSiteId());
+	}
+	
+	private String getEventMessage(Object object, String siteId) {
+		return "/content/group/" + siteId + "/Podcasts/" + getCurrentUser() + Entity.SEPARATOR + object.toString();
 	}
 	
 	private String getCurrentUser() {        
