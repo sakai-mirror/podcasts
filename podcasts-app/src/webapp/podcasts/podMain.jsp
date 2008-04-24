@@ -57,7 +57,7 @@
  		   <f:verbatim>" class="active" target="</f:verbatim>
  		   <h:outputText value="_blank \" " />
  		   <f:verbatim> > </f:verbatim>
- 	       <h:graphicImage value="images/rss-feed-icon.png" styleClass="indnt1 rssIcon" width="25px" height="25px" />
+ 	       <h:graphicImage value="images/rss-feed-icon.png" styleClass="indnt1 rssIcon" />
 		 <f:verbatim></a>
          <br /></f:verbatim>
  	     
