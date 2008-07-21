@@ -53,6 +53,7 @@ import org.sakaiproject.api.app.podcasts.PodcastService;
 import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.authz.cover.FunctionManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
@@ -659,7 +660,18 @@ public class podHomeBean {
 		podcastInfo.setDisplayDate(formatter.format(tempDate));
 
 		// store result of hidden property OR after retract date OR before release date
-		final boolean uiHidden = hiddenInUI(podcastResource, tempDate);
+		
+		// SAK-12723: added check to determine if entire Podcasts folder is 'hidden'
+		Date folderTempDate = null;
+		ContentCollection podcastFolder = podcastResource.getContainingCollection();
+		if (podcastFolder.getReleaseDate() == null) {
+			folderTempDate = new Date(TimeService.newTime().getTime() - PodcastService.oneDay);
+		} 
+		else {
+			folderTempDate = new Date(podcastFolder.getReleaseDate().getTime());
+		}
+		
+		final boolean uiHidden = hiddenInUI(podcastResource, tempDate) || podcastService.isResourceHidden(podcastResource.getContainingCollection(), folderTempDate);
 		podcastInfo.setHidden(uiHidden);
 
 		// if podcast should be hidden, set style class to 'inactive'
@@ -1171,7 +1183,7 @@ public class podHomeBean {
 		Date convertedDate = null;
 		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_STRING);
 		dateFormat.setTimeZone(TimeService.getLocalTimeZone());
-		
+
 		convertedDate = dateFormat.parse(inputDate);
 
 		return convertedDate;
@@ -1389,27 +1401,25 @@ public class podHomeBean {
 		Date displayDate = null;
 		Date displayDateRevise = null;
 		try {
-			displayDate = convertDateString(selectedPodcast.displayDate,
-					getErrorMessageString(PUBLISH_DATE_FORMAT));
-
 			try {
-				displayDateRevise = convertDateString(selectedPodcast.displayDateRevise, 
-						getErrorMessageString(DATE_BY_HAND_FORMAT));
-
+				// SAK-13493: SimpleDateFormat.parse() did not enforce format specified, so
+				// had to call custom method to check if String was valid
+				if (isValidDate(selectedPodcast.displayDateRevise)) {
+					displayDateRevise = convertDateString(selectedPodcast.displayDateRevise, 
+											getErrorMessageString(DATE_BY_HAND_FORMAT));
+				}
+				else {
+					throw new ParseException("Invalid displayDate stored in selectedPodcast", 0);
+				}
 			}
 			catch (ParseException e) {
 				// must have used date picker, so try again
-				try {
+				if (isValidDate(selectedPodcast.displayDateRevise)) {
 					displayDateRevise = convertDateString(selectedPodcast.displayDateRevise, 
-							getErrorMessageString(DATE_PICKER_FORMAT));
-				
+											getErrorMessageString(DATE_PICKER_FORMAT));
 				}
-				catch (ParseException e1) {
-					LOG.error("ParseException attempting to convert date for " + selectedPodcast.title
-									+ " for site " + podcastService.getSiteId() + ". " + e1.getMessage());
-					displayInvalidDateErrMsg = true;
-					return "podcastRevise";
-
+				else {
+					throw new ParseException("Invalid displayDate entered while revising podcast " + selectedPodcast.filename, 0);
 				}
 			}
 
@@ -1423,7 +1433,6 @@ public class podHomeBean {
 				podcastService.removePodcast(selectedPodcast.getResourceId());
 			} 
 			else {
-
 				// only title, description, or date has changed, so can revise
 				podcastService.revisePodcast(selectedPodcast.resourceId,
 						selectedPodcast.title, displayDateRevise,
@@ -1445,6 +1454,13 @@ public class podHomeBean {
 			}
 */			
 		} 
+		catch (ParseException e1) {
+			LOG.error("ParseException attempting to convert date for " + selectedPodcast.title
+							+ " for site " + podcastService.getSiteId() + ". " + e1.getMessage(), e1);
+			date = "";
+			displayInvalidDateErrMsg = true;
+			return "podcastRevise";
+		}
 		catch (PermissionException e) {
 			LOG.error("PermissionException while revising podcast "
 					+ selectedPodcast.title + " for site " + podcastService.getSiteId() + ". " + e.getMessage());
@@ -1474,14 +1490,6 @@ public class podHomeBean {
 							+ selectedPodcast.filename + " to " + filename
 							+ " for site " + podcastService.getSiteId() + ". " + e.getMessage());
 			setErrorMessage(LENGTH_ALERT);
-			return "podcastRevise";
-
-		}
-		catch (ParseException e) {
-			LOG.error("ParseException attempting to convert date for " + selectedPodcast.title
-							+ " for site " + podcastService.getSiteId() + ". " + e.getMessage());
-			date = "";
-			displayInvalidDateErrMsg = true;
 			return "podcastRevise";
 
 		}
@@ -1729,11 +1737,6 @@ public class podHomeBean {
 
 		// Should contain date part, time port, AM/PM part
 		String[] wholeDateSplit = date.split(" ");
-
-		// if not in 2 parts, input error
-		if (wholeDateSplit.length != 3) {
-			return false;
-		}
 
 		// since date entered first, check it first
 		String[] dateSplit = wholeDateSplit[0].split("/");

@@ -47,6 +47,9 @@ import org.sakaiproject.tool.api.ToolManager;
 
 public interface PodcastService // extends EntityProducer
 {
+	/** number of milliseconds in a day **/
+	public static final long oneDay = 1000* 3600 * 24;
+ 
 	/** This string can be used to find the service in the service manager. */
 	public static final String COLLECTION_PODCASTS = "Podcasts";
 	
@@ -360,4 +363,15 @@ public interface PodcastService // extends EntityProducer
 	 */
 	public boolean allowAccess(String id);
 
+	/**
+	 * <p>Returns TRUE if resource set to hidden OR its release date is in the
+	 * 	future OR its retract date is in the past</p>
+	 * 
+	 * DEVELOPER NOTE: in trunk, this is in the podcastPermissionsService - added
+	 * here to pack port this functionality.
+	 * @param podcastResource
+	 * @param tempDate
+	 * @return
+	 */
+	 public boolean isResourceHidden(ContentCollection podcastResource, Date tempDate);
 }
