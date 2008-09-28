@@ -1,0 +1,23 @@
+<projectDescription>
+  <name>sakai-podcasts</name>
+  <comment/>
+  <projects>
+    <project>sakai-dav-common</project>
+    <project>sakai-depend-jsf-widgets-sun</project>
+    <project>sakai-jsf-app</project>
+    <project>sakai-jsf-sun-ri-tool</project>
+    <project>sakai-jsf-tool</project>
+    <project>sakai-jsf-widgets</project>
+    <project>sakai-jsf-widgets-sun</project>
+    <project>sakai-podcasts-api</project>
+    <project>sakai-search-api</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
