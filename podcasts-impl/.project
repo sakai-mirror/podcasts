@@ -2,7 +2,6 @@
   <name>sakai-podcasts-impl</name>
   <comment/>
   <projects>
-    <project>sakai-archive-api</project>
     <project>sakai-podcasts-api</project>
   </projects>
   <buildSpec>
