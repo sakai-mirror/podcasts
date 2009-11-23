@@ -2,6 +2,7 @@
   <name>sakai-podcasts</name>
   <comment/>
   <projects>
+    <project>sakai-dav-common</project>
     <project>sakai-podcasts-api</project>
   </projects>
   <buildSpec>
