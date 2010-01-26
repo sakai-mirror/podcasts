@@ -1,0 +1,19 @@
+<projectDescription>
+  <name>sakai-podcasts-pack</name>
+  <comment/>
+  <projects>
+    <project>sakai-entity-util</project>
+    <project>sakai-event-util</project>
+    <project>sakai-podcasts-impl</project>
+    <project>sakai-site-api</project>
+    <project>sakai-util</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

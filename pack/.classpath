@@ -1,0 +1,15 @@
+<classpath>
+  <classpathentry kind="output" path="m2-target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/rome/itunes/0.3/itunes-0.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/rome/rome/0.8/rome-0.8.jar"/>
+  <classpathentry kind="src" path="/sakai-entity-util"/>
+  <classpathentry kind="src" path="/sakai-event-util"/>
+  <classpathentry kind="src" path="/sakai-podcasts-impl"/>
+  <classpathentry kind="src" path="/sakai-site-api"/>
+  <classpathentry kind="src" path="/sakai-util"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>
