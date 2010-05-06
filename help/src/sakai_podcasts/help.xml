@@ -5,7 +5,7 @@
    <bean id="podcastsOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>aucy</value></property>
       <property name="name"><value>Podcasts Overview</value></property>
-      <property name="location"><value>/sakai_podcasts/aucy.Html</value></property>
+      <property name="location"><value>/sakai_podcasts/aucy.html</value></property>
       <property name="defaultForTool"><value>sakai.podcasts</value></property>
    </bean>
    
