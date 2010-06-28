@@ -1444,27 +1444,25 @@ public class podHomeBean {
 		Date displayDate = null;
 		Date displayDateRevise = null;
 		try {
-			displayDate = convertDateString(selectedPodcast.displayDate,
-					getErrorMessageString(PUBLISH_DATE_FORMAT));
-
 			try {
-				displayDateRevise = convertDateString(selectedPodcast.displayDateRevise, 
-						getErrorMessageString(DATE_BY_HAND_FORMAT));
-
+				// SAK-13493: SimpleDateFormat.parse() did not enforce format specified, so
+				// had to call custom method to check if String was valid
+				if (isValidDate(selectedPodcast.displayDateRevise)) {
+					displayDateRevise = convertDateString(selectedPodcast.displayDateRevise, 
+											getErrorMessageString(DATE_BY_HAND_FORMAT));
+				}
+				else {
+					throw new ParseException("Invalid displayDate stored in selectedPodcast", 0);
+				}
 			}
 			catch (ParseException e) {
 				// must have used date picker, so try again
-				try {
+				if (isValidDate(selectedPodcast.displayDateRevise)) {
 					displayDateRevise = convertDateString(selectedPodcast.displayDateRevise, 
-							getErrorMessageString(DATE_PICKER_FORMAT));
-				
+											getErrorMessageString(DATE_PICKER_FORMAT));
 				}
-				catch (ParseException e1) {
-					LOG.error("ParseException attempting to convert date for " + selectedPodcast.title
-									+ " for site " + podcastService.getSiteId() + ". " + e1.getMessage());
-					displayInvalidDateErrMsg = true;
-					return "podcastRevise";
-
+				else {
+					throw new ParseException("Invalid displayDate entered while revising podcast " + selectedPodcast.filename, 0);
 				}
 			}
 
@@ -1500,15 +1498,22 @@ public class podHomeBean {
 			}
 */			
 		} 
+		catch (ParseException e1) {
+			LOG.error("ParseException attempting to convert date for " + selectedPodcast.title
+							+ " for site " + podcastService.getSiteId() + ". " + e1.getMessage(), e1);
+			date = "";
+			displayInvalidDateErrMsg = true;
+			return "podcastRevise";
+		}
 		catch (PermissionException e) {
 			LOG.error("PermissionException while revising podcast "
-					+ selectedPodcast.title + " for site " + podcastService.getSiteId() + ". " + e.getMessage());
+					+ selectedPodcast.title + " for site " + podcastService.getSiteId() + ". " + e.getMessage(), e);
 			setErrorMessage(PERMISSION_ALERT);
 			
 		} 
 		catch (InUseException e) {
 			LOG.warn("InUseException while revising podcast "
-					+ selectedPodcast.title + " for site " + podcastService.getSiteId() + ". " + e.getMessage());
+					+ selectedPodcast.title + " for site " + podcastService.getSiteId() + ". " + e.getMessage(), e);
 			setErrorMessage(INTERNAL_ERROR_ALERT);
 
 		} 
@@ -1529,14 +1534,6 @@ public class podHomeBean {
 							+ selectedPodcast.filename + " to " + filename
 							+ " for site " + podcastService.getSiteId() + ". " + e.getMessage());
 			setErrorMessage(LENGTH_ALERT);
-			return "podcastRevise";
-
-		}
-		catch (ParseException e) {
-			LOG.error("ParseException attempting to convert date for " + selectedPodcast.title
-							+ " for site " + podcastService.getSiteId() + ". " + e.getMessage());
-			date = "";
-			displayInvalidDateErrMsg = true;
 			return "podcastRevise";
 
 		}
