@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import javax.faces.application.FacesMessage;
@@ -532,7 +533,8 @@ public class podHomeBean {
 	  */ 
 	 public String processPermissions() {
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-
+			ToolSession toolSession = SessionManager.getCurrentToolSession();
+			
 			try {
 				String url = "sakai.permissions.helper.helper/tool?session." +
 								PermissionsHelper.DESCRIPTION + "=" + getPermissionsMessage() +
@@ -541,6 +543,19 @@ public class podHomeBean {
 								"&session." + PermissionsHelper.PREFIX + "=" + CONTENT +
 								"&session." + PermissionsHelper.ROLES_REF + "=" +
 								"/site/" + podcastService.getSiteId();
+				
+				// Set permission descriptions
+		          if (toolSession != null) {
+		        	  ResourceLoader pRb = new ResourceLoader("org.sakaiproject.api.podcasts.bundle.permissions");
+		        	  HashMap<String, String> pRbValues = new HashMap<String, String>();
+		        	  for (Iterator<Entry<String, String>> mapIter = pRb.entrySet().iterator();mapIter.hasNext();)
+		        	  {
+		        		  Entry<String, String> entry = mapIter.next();
+		        		  pRbValues.put(entry.getKey(), entry.getValue());
+		        	  }
+
+		        	  toolSession.setAttribute("permissionDescriptions", pRbValues); 
+		          }
 
 		        context.redirect(url);
 		    }
