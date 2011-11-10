@@ -170,7 +170,7 @@ public class podHomeBean {
 				dispDate = displayDateRevise;
 			}
 				
-			SimpleDateFormat formatter = new SimpleDateFormat(getErrorMessageString(DATE_BY_HAND_FORMAT));
+			SimpleDateFormat formatter = new SimpleDateFormat(getErrorMessageString(DATE_BY_HAND_FORMAT), rb.getLocale());
 			formatter.setTimeZone(TimeService.getLocalTimeZone());
 			
 			try {
@@ -638,7 +638,7 @@ public class podHomeBean {
 		// if instructor or has hidden property, set hidden property of decorated bean
 		// if not, return null since user cannot see
 		Date tempDate = null;
-		final SimpleDateFormat formatter = new SimpleDateFormat(getErrorMessageString(PUBLISH_DATE_FORMAT));
+		final SimpleDateFormat formatter = new SimpleDateFormat(getErrorMessageString(PUBLISH_DATE_FORMAT), rb.getLocale());
 		formatter.setTimeZone(TimeService.getLocalTimeZone());
 
 		// get release/publish date - else part needed for podcasts created before release/retract dates
@@ -1227,7 +1227,7 @@ public class podHomeBean {
 			final String FORMAT_STRING) throws ParseException {
 
 		Date convertedDate = null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_STRING);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_STRING, rb.getLocale());
 		dateFormat.setTimeZone(TimeService.getLocalTimeZone());
 
 		convertedDate = dateFormat.parse(inputDate);
